@@ -29,22 +29,21 @@ pipeline {
         }
       }
     }
-    stage('Build and Push Docker Image') {
-      environment {
-        DOCKER_IMAGE = "nancyrani/spring-boot-app:${BUILD_NUMBER}"
-        // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
-        REGISTRY_CREDENTIALS = credentials('docker-cred')
-      }
-      steps {
-        script {
-            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-            def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
-                dockerImage.push()
+    stage("build "){
+            steps{
+                sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t abhishekf5/maven-abhishek-docker-agent:v1 ."
+                echo 'Image build bhi ho gayi'
             }
         }
-      }
-    }
+    stage("push"){
+            steps{
+                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+               sh "docker push ${env.dockerHubUser}/abhishekf5/maven-abhishek-docker-agent:v1"
+                echo 'image push ho gaya'
+                }
+              }
+            }  
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
