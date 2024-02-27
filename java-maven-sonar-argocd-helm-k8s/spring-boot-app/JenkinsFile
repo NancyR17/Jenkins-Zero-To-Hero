@@ -39,7 +39,7 @@ pipeline {
             steps{
                 withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-               sh "docker push ${env.dockerHubUser}/nancyrani/abhishekf5/maven-abhishek-docker-agent:v1"
+               sh "docker push ${env.dockerHubUser}/nancy rani/maven-abhishek-docker-agent:v1"
                 echo 'image push ho gaya'
                 }
               }
